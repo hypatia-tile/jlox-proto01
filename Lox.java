@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.nio.charset.Charset;
 
 public class Lox {
-  private static final String newLine = System.lineSeparator();
 
   public static void main(String[] args) throws IOException {
     if (args.length > 1) {
@@ -39,6 +38,6 @@ public class Lox {
   }
 
   private static void run(String source) {
-    System.out.printf("result: %s%s", source, newLine);
+    new Lexer().lex(source);
   }
 }
