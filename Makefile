@@ -2,11 +2,13 @@ inputfile = test.txt
 
 all: bin/Lox.class
 
-
-bin/Lox.class: Lox.java bin/Lexer.class 
+bin/Lox.class: Lox.java bin/Lexer.class bin/Scanner.class
 	@mkdir -p bin
 	@javac -d bin $<
 
+bin/Scanner.class: Scanner.java
+	@mkdir -p bin
+	@javac -d bin $<
 bin/Lexer.class: Lexer.java
 	@mkdir -p bin
 	@javac -d bin $<

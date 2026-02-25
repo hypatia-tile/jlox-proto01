@@ -1,5 +1,11 @@
+import java.util.List;
+
 public class Lexer {
   public void lex(String source) {
-    System.out.printf("lexing: %s%s", source, System.lineSeparator());
+    Scanner scanner = new Scanner(source);
+    List<String> tokens = scanner.scanTokens();
+    for (String token : tokens) {
+      System.out.printf("token: %s\n", token);
+    }
   }
 }
