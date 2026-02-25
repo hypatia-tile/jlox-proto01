@@ -37,6 +37,16 @@ public class Lox {
 
   }
 
+  static void error(int line, String message) {
+    report(line, "", message);
+  }
+
+  private static void report(int line, String where, String message) {
+    System.err.println(
+        String.format("[line %d] Error %s: %s",
+            line, where, message));
+  }
+
   private static void run(String source) {
     new Lexer().lex(source);
   }
