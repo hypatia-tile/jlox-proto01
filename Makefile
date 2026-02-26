@@ -1,23 +1,16 @@
 inputfile = test.txt
+LOX_DIR = com/craftinginterpreters/lox
+Lox = $(LOX_DIR)/Lox.java
 
-all: bin/Lox.class
-
-bin/Lox.class: Lox.java bin/Lexer.class bin/Scanner.class
+all: $(Lox)
 	@mkdir -p bin
-	@javac -d bin $<
-
-bin/Scanner.class: Scanner.java
-	@mkdir -p bin
-	@javac -d bin $<
-bin/Lexer.class: Lexer.java
-	@mkdir -p bin
-	@javac -d bin $<
-
-$(inputfile): all
-	@java -cp bin Lox $@
+	@javac -d bin $(Lox)
 
 run: all
-	@java -cp bin Lox
+	@java -cp bin com.craftinginterpreters.lox.Lox
+
+$(inputfile): all
+	@java -cp bin com.craftinginterpreters.lox.Lox $(inputfile)
 
 clean:
 	@rm -rf bin
