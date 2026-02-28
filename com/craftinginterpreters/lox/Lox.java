@@ -40,6 +40,6 @@ public class Lox {
   }
 
   private static void run(String source) {
-    new Lexer().lex(source);
+    Lexer.lex(source);
   }
 }
