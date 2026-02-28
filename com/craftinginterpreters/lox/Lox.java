@@ -22,12 +22,14 @@ public class Lox {
 
   private static void runFile(String path) throws IOException {
     byte[] bytes = Files.readAllBytes(Paths.get(path));
+    ErrorReporter.source = path;
     run(new String(bytes, Charset.defaultCharset()));
   }
 
   private static void runPrompt() throws IOException {
     try (InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input)) {
+      ErrorReporter.source = "REPL";
       for (;;) {
         System.out.print("> ");
         String line = reader.readLine();
@@ -40,6 +42,10 @@ public class Lox {
   }
 
   private static void run(String source) {
+    ErrorReporter.hadError = false;
     Lexer.lex(source);
+    if (ErrorReporter.hadError) {
+      System.exit(65);
+    }
   }
 }
