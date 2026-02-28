@@ -10,18 +10,23 @@ import java.util.Map;
  */
 class Scanner {
   private final String source;
-  private final List<String> tokens = new ArrayList<>();
+  private final List<Token> tokens = new ArrayList<>();
 
   Scanner(String source) {
     this.source = source;
   }
 
-  public List<String> scanTokens() {
+  public List<Token> scanTokens() {
     // for simplicity, we just split the source by whitespace
     String[] parts = source.split("\\s+");
     for (String part : parts) {
       if (!part.isEmpty()) {
-        tokens.add(part);
+        Token totken = new Token(
+            TokenType.IDENTIFIER,
+            part,
+            null,
+            -1);
+        tokens.add(totken);
       }
     }
     return tokens;
