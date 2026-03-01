@@ -76,6 +76,15 @@ class Scanner {
       case '>':
         addToken(match('=') ? GREATER_EQUAL : GREATER);
         break;
+      case '/':
+        if (match('/')) {
+          // A comment goes until the end of the line.
+          while (peek() != '\n' && !isAtEnd())
+            advance();
+        } else {
+          addToken(SLASH);
+        }
+        break;
       default:
         ErrorReporter.error(line, "Unexpected character: " + (int) c);
         break;
@@ -102,6 +111,12 @@ class Scanner {
       return false;
     current++;
     return true;
+  }
+
+  private char peek() {
+    if (isAtEnd())
+      return '\0';
+    return source.charAt(current);
   }
 
   private boolean isAtEnd() {
