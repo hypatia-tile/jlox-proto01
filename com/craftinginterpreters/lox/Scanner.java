@@ -93,10 +93,34 @@ class Scanner {
       case '\n':
         line++;
         break;
+      case '"':
+        string();
+        break;
       default:
         ErrorReporter.error(line, "Unexpected character: " + (int) c);
         break;
     }
+  }
+
+  private void string() {
+    while (peek() != '"' && !isAtEnd()) {
+      if (peek() == '\n')
+        line++;
+
+      advance();
+    }
+
+    if (isAtEnd()) {
+      ErrorReporter.error(line, "Unterminated string.");
+      return;
+    }
+
+    // The closing ".
+    advance();
+
+    // Trim the surrounding quotes.
+    String value = source.substring(start + 1, current - 1);
+    addToken(STRING, value);
   }
 
   private char advance() {
