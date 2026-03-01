@@ -43,7 +43,7 @@ public class Lox {
 
   private static void run(String source) {
     ErrorReporter.hadError = false;
-    Lexer.lex(source);
+    Scanner.lex(source);
     if (ErrorReporter.hadError) {
       System.exit(65);
     }
