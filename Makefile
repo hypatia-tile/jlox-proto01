@@ -9,10 +9,10 @@ all: $(Lox)
 run: all
 	@java -cp bin com.craftinginterpreters.lox.Lox
 
-$(inputfile): all
-	@java -cp bin com.craftinginterpreters.lox.Lox $(inputfile)
+test: $(inputfile) all
+	@java -cp bin com.craftinginterpreters.lox.Lox $<
 
 clean:
 	@rm -rf bin
 
-.PHONY: all run clean
+.PHONY: all run clean test
