@@ -60,6 +60,7 @@ public class GenerateAst {
       String typeName = type.split(":")[0].trim();
       writer.println("    R visit" + typeName + baseName + "(" +
           typeName + " " + baseName.toLowerCase() + ");");
+      writer.println();
     }
 
     writer.println("  }");
@@ -68,6 +69,7 @@ public class GenerateAst {
   private static void defineType(
       PrintWriter writer, String baseName,
       String className, String fieldList) {
+    writer.println();
     writer.println("  static class " + className + " extends " +
         baseName + " {");
 
