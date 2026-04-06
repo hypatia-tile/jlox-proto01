@@ -51,10 +51,8 @@ public class Lox {
     ErrorReporter.hadError = false;
     List<Token> tokens = Scanner.lex(source);
     Parser parser = new Parser(tokens);
-    Expr expression = parser.parse();
+    List<Stmt> statements = parser.parse();
     if (ErrorReporter.hadError) return;
-
-    System.out.println(new AstPrinter().print(expression));
-    interpreter.interpret(expression);
+    interpreter.interpret(statements);
   }
 }
