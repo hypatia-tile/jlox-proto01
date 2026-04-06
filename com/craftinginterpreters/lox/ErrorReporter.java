@@ -13,6 +13,7 @@ public class ErrorReporter {
   }
 
   public static void parseError(Token token, String message) {
+    hadError = true;
     if (token.type == TokenType.EOF) {
       report(token.line, " at end", message);
     } else {
