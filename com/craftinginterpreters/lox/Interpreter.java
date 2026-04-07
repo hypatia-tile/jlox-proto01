@@ -19,6 +19,21 @@ class Interpreter implements Expr.Visitor<Object>,
   private Environment environment = new Environment();
 
   @Override
+  public Object visitLogicalExpr(Expr.Logical expr) {
+    Object left = evaluate(expr.left);
+
+    if (expr.operator.type == TokenType.OR) {
+      if (isTruthy(left))
+        return left;
+    } else {
+      if (!isTruthy(left))
+        return left;
+    }
+
+    return evaluate(expr.right);
+  }
+
+  @Override
   public Void visitIfStmt(Stmt.If stmt) {
     if (isTruthy(evaluate(stmt.condition))) {
       execute(stmt.thenBranch);
@@ -189,7 +204,7 @@ class Interpreter implements Expr.Visitor<Object>,
   }
 
   void executeBlock(List<Stmt> statements,
-    Environment environment) {
+      Environment environment) {
     Environment previous = this.environment;
     try {
       this.environment = environment;
