@@ -8,6 +8,7 @@ import com.craftinginterpreters.lox.Expr.Grouping;
 import com.craftinginterpreters.lox.Expr.Literal;
 import com.craftinginterpreters.lox.Expr.Unary;
 import com.craftinginterpreters.lox.Expr.Variable;
+import com.craftinginterpreters.lox.Stmt.Block;
 import com.craftinginterpreters.lox.Stmt.Expression;
 import com.craftinginterpreters.lox.Stmt.Print;
 import com.craftinginterpreters.lox.Stmt.Var;
@@ -16,6 +17,12 @@ class Interpreter implements Expr.Visitor<Object>,
     Stmt.Visitor<Void> {
 
   private Environment environment = new Environment();
+
+  @Override
+  public Void visitBlockStmt(Block stmt) {
+    executeBlock(stmt.statements, new Environment(environment));
+    return null;
+  }
 
   @Override
   public Object visitAssignExpr(Assign expr) {
@@ -171,6 +178,20 @@ class Interpreter implements Expr.Visitor<Object>,
     stmt.accept(this);
   }
 
+  void executeBlock(List<Stmt> statements,
+    Environment environment) {
+    Environment previous = this.environment;
+    try {
+      this.environment = environment;
+
+      for (Stmt statement : statements) {
+        execute(statement);
+      }
+    } finally {
+      this.environment = previous;
+    }
+  }
+
   private String stringify(Object object) {
     if (object == null)
       return "nil";
@@ -185,4 +206,5 @@ class Interpreter implements Expr.Visitor<Object>,
 
     return object.toString();
   }
+
 }
