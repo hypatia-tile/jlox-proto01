@@ -7,6 +7,11 @@ import java.util.function.Supplier;
 
 import static com.craftinginterpreters.lox.TokenType.*;
 
+@FunctionalInterface
+interface TernaryFunction<A, B, C, R> {
+  R apply(A a, B b, C c);
+}
+
 class Parser {
   List<Stmt> parse() {
     List<Stmt> statements = new ArrayList<>();
@@ -120,44 +125,45 @@ class Parser {
   }
 
   private Expr or() {
-    Expr expr = and();
-
-    while (match(OR)) {
-      Token operator = previous();
-      Expr right = and();
-      expr = new Expr.Logical(expr, operator, right);
-    }
-
-    return expr;
+    return leftAssoc(and(),
+        tok -> tok == OR,
+        this::and,
+        Expr.Logical::new);
   }
 
   private Expr and() {
-    Expr expr = equality();
-
-    while (match(AND)) {
-      Token operator = previous();
-      Expr right = equality();
-      expr = new Expr.Logical(expr, operator, right);
-    }
-
-    return expr;
+    return leftAssoc(equality(),
+        tok -> tok == AND,
+        this::equality,
+        Expr.Logical::new);
   }
 
   private Expr equality() {
-    return leftAssoc(comparison(), tok -> tok == BANG_EQUAL || tok == EQUAL_EQUAL, this::comparison);
+    return leftAssoc(comparison(),
+        tok -> tok == BANG_EQUAL || tok == EQUAL_EQUAL,
+        this::comparison,
+        Expr.Binary::new);
   }
 
   private Expr comparison() {
-    return leftAssoc(term(), tok -> tok == GREATER || tok == GREATER_EQUAL || tok == LESS || tok == LESS_EQUAL,
-        this::term);
+    return leftAssoc(term(),
+        tok -> tok == GREATER || tok == GREATER_EQUAL || tok == LESS || tok == LESS_EQUAL,
+        this::term,
+        Expr.Binary::new);
   }
 
   private Expr term() {
-    return leftAssoc(factor(), tok -> tok == MINUS || tok == PLUS, this::factor);
+    return leftAssoc(factor(),
+        tok -> tok == MINUS || tok == PLUS,
+        this::factor,
+        Expr.Binary::new);
   }
 
   private Expr factor() {
-    return leftAssoc(unary(), tok -> tok == SLASH || tok == STAR, this::unary);
+    return leftAssoc(unary(),
+        tok -> tok == SLASH || tok == STAR,
+        this::unary,
+        Expr.Binary::new);
   }
 
   private Expr unary() {
@@ -202,12 +208,15 @@ class Parser {
     return new ParseError();
   }
 
-  private Expr leftAssoc(Expr baseExpr, Predicate<TokenType> opFilter, Supplier<Expr> nextLevelParser) {
+  private Expr leftAssoc(Expr baseExpr,
+      Predicate<TokenType> opFilter,
+      Supplier<Expr> nextLevelParser,
+      TernaryFunction<Expr, Token, Expr, Expr> nodeConstructor) {
     Expr acc = baseExpr;
     while (match(opFilter)) {
       Token operator = previous();
       Expr right = nextLevelParser.get();
-      acc = new Expr.Binary(acc, operator, right);
+      acc = nodeConstructor.apply(acc, operator, right);
     }
     return acc;
   }
