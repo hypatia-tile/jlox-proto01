@@ -15,6 +15,7 @@ public class GenerateAst {
     defineAst(outputDir, "Expr", Arrays.asList(
         "Assign   : Token name, Expr value",
         "Binary   : Expr left, Token operator, Expr right",
+        "Call     : Expr callee, Token paren, List<Expr> arguments",
         "Grouping : Expr expression",
         "Literal  : Object value",
         "Logical  : Expr left, Token operator, Expr right",
@@ -22,14 +23,16 @@ public class GenerateAst {
         "Variable : Token name"));
 
     defineAst(outputDir, "Stmt", Arrays.asList(
-          "Block      : List<Stmt> statements",
-          "Expression : Expr expression",
-          "If         : Expr condition, Stmt thenBranch," +
-              " Stmt elseBranch",
-          "Print      : Expr expression",
-          "Var        : Token name, Expr initializer",
-          "While      : Expr condition, Stmt body"
-          ));
+        "Block      : List<Stmt> statements",
+        "Expression : Expr expression",
+        "Function   : Token name, List<Token> params," +
+            " List<Stmt> body",
+        "If         : Expr condition, Stmt thenBranch," +
+            " Stmt elseBranch",
+        "Print      : Expr expression",
+        "Return     : Token keyword, Expr value",
+        "Var        : Token name, Expr initializer",
+        "While      : Expr condition, Stmt body"));
   }
 
   /**
@@ -47,7 +50,7 @@ public class GenerateAst {
     writer.println();
     writer.println("abstract class " + baseName + " {");
 
-    defineVisitor(writer ,baseName, types);
+    defineVisitor(writer, baseName, types);
 
     // The AST classes.
     for (String type : types) {
@@ -56,7 +59,7 @@ public class GenerateAst {
       String fields = parts[1].trim();
       defineType(writer, baseName, className, fields);
     }
-    
+
     // define the baes accept() method.
     writer.println();
     writer.println("  abstract <R> R accept(Visitor<R> visitor);");
