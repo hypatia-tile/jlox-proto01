@@ -1,4 +1,4 @@
-inputfile = test.txt
+inputfile = examples/test.txt
 LOX_DIR = com/craftinginterpreters/lox
 Lox = $(LOX_DIR)/Lox.java
 Printer = $(LOX_DIR)/AstPrinter.java
