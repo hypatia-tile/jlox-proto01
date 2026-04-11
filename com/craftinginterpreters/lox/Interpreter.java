@@ -121,6 +121,20 @@ class Interpreter implements Expr.Visitor<Object>,
   }
 
   @Override
+  public Object visitSetExpr(Expr.Set expr) {
+    Object object = evaluate(expr.object);
+
+    if (object instanceof LoxInstance instance) {
+      Object value = evaluate(expr.value);
+      instance.set(expr.name, value);
+      return value;
+    } else {
+      throw new RuntimeError(expr.name,
+          "Only instances have fields.");
+    }
+  }
+
+  @Override
   public Void visitIfStmt(Stmt.If stmt) {
     if (isTruthy(evaluate(stmt.condition))) {
       execute(stmt.thenBranch);
