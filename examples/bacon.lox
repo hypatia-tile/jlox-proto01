@@ -1,0 +1,16 @@
+class Bacon {
+  eat() {
+    print "Crunch crunch charch!";
+  }
+}
+
+var bacon = Bacon();
+fun eat() {
+  print "Chewy!";
+}
+
+bacon.eat(); // Print "Crunch crunch charch!"
+
+bacon.eat = eat;
+
+bacon.eat(); // Print "Chewy!"
